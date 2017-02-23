@@ -28,6 +28,9 @@ public class Chunk : MonoBehaviour {
     int resolutionX;
     int resolutionY;
     int resolutionZ;
+    public int idX;
+    public int idY;
+    public int idZ;
     public float originX;
     public float originY;
     public float originZ;
@@ -65,15 +68,16 @@ public class Chunk : MonoBehaviour {
         if (generationDone && !meshCreated)
         {
             unityMesh.name = "proter-" + originX + "-" + originZ + "-" + originY;
+            unityMesh.Clear();
             unityMesh.vertices = finalVertices;
             unityMesh.normals = finalNormals;
             unityMesh.triangles = finalFaces;
             // mesh.uvs = uvs;
             
-            mf.mesh = unityMesh;
+            mf.sharedMesh = unityMesh;
             mc.sharedMesh = unityMesh;
             meshCreated = true;
-            Debug.Log("Chunk " + originX + " " + originY + " " + originZ + " généré (" + finalFaces.Length + " triangles)");
+            // Debug.Log("Chunk " + originX + " " + originY + " " + originZ + " généré (" + finalFaces.Length + " triangles)");
         }
     }
     
@@ -98,6 +102,15 @@ public class Chunk : MonoBehaviour {
         DestroyImmediate(unityMesh, true);
         Destroy(this);
     }
+    
+    public void PrepareRecycle()
+    {
+        mf.sharedMesh = null;
+        mc.sharedMesh = null;
+        meshCreated = false;
+        building = false;
+        generationDone = false;
+    }
 
     public void CreateUnityGeometry(float sx, float sy, float sz, int rx, int ry, int rz, float origX, float origY, float origZ, Density d)
     {
@@ -119,12 +132,13 @@ public class Chunk : MonoBehaviour {
         blocks = new Block[(resolutionX+1) * (resolutionY+1) * (resolutionZ+1)];
         mesh = new SimpleMesh();
         
-        generateThread = new Thread(new ThreadStart(generateAll));
-        generateThread.Start();
+        // generateThread = new Thread(new ThreadStart(generateAll));
+        // generateThread.Start();
+        ThreadPool.QueueUserWorkItem(generateAll);
         building = true;
     }
     
-    void generateAll()
+    void generateAll(System.Object threadContext)
     {
         generationDone = false;
         meshCreated = false;
@@ -142,6 +156,7 @@ public class Chunk : MonoBehaviour {
         for (int i=0; i<mesh.faces.Count; i++)
             finalFaces[i] = mesh.faces[i];
         
+        // Thread.Sleep(5000);
         generationDone = true; // on attend la resynchronisation avec le thread principal de Unity pour charger les données en CG
     }
     
@@ -501,15 +516,15 @@ public class Chunk : MonoBehaviour {
         }
     }
     
-    void OnDrawGizmosSelected () {
-        Transform transform = this.transform;
-        for (int x=0; x<resolutionX+1; x++)
-            for (int y=0; y<resolutionY+1; y++)
-                for (int z=0; z<resolutionZ+1; z++)
-                {
-                    Block b = get(x,y,z);
-                    Gizmos.DrawLine(transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX), transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX + b.direction*.2f));
-                    Gizmos.DrawWireSphere(transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX), .1f);
-                }
-    }
+    // void OnDrawGizmosSelected () {
+        // Transform transform = this.transform;
+        // for (int x=0; x<resolutionX+1; x++)
+            // for (int y=0; y<resolutionY+1; y++)
+                // for (int z=0; z<resolutionZ+1; z++)
+                // {
+                    // Block b = get(x,y,z);
+                    // Gizmos.DrawLine(transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX), transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX + b.direction*.2f));
+                    // Gizmos.DrawWireSphere(transform.TransformPoint(new Vector3(x,y,z)*sizeX/resolutionX), .1f);
+                // }
+    // }
 }

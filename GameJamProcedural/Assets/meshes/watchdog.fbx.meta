@@ -1,0 +1,415 @@
+fileFormatVersion: 2
+guid: a2986c8ad613c7e46a8202bf1867c706
+timeCreated: 1487787288
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: arm.0
+    100002: arm.1
+    100004: arm.2
+    100006: Armature
+    100008: Cube
+    100010: Main
+    100012: pincerA.0
+    100014: pincerA.1
+    100016: pincerA.2
+    100018: pincerB.0
+    100020: pincerB.0_end
+    100022: pincerB.1
+    100024: pincerB.1_end
+    100026: pincerB.2
+    100028: pincerB.2_end
+    100030: //RootNode
+    400000: arm.0
+    400002: arm.1
+    400004: arm.2
+    400006: Armature
+    400008: Cube
+    400010: Main
+    400012: pincerA.0
+    400014: pincerA.1
+    400016: pincerA.2
+    400018: pincerB.0
+    400020: pincerB.0_end
+    400022: pincerB.1
+    400024: pincerB.1_end
+    400026: pincerB.2
+    400028: pincerB.2_end
+    400030: //RootNode
+    4300000: Cube
+    7400000: Armature|Attack
+    7400002: Armature|Close
+    7400004: Armature|Idle
+    7400006: Armature|IdleProne
+    7400008: Armature|Open
+    9500000: //RootNode
+    13700000: Cube
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations:
+    - serializedVersion: 16
+      name: Armature|Attack
+      takeName: Armature|Attack
+      firstFrame: 0
+      lastFrame: 29
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Main
+        weight: 1
+      - path: Armature/Main/arm.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0/pincerB.0_end
+        weight: 1
+      - path: Armature/Main/arm.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1/pincerB.1_end
+        weight: 1
+      - path: Armature/Main/arm.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2/pincerB.2_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|Close
+      takeName: Armature|Close
+      firstFrame: 0
+      lastFrame: 59
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Main
+        weight: 1
+      - path: Armature/Main/arm.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0/pincerB.0_end
+        weight: 1
+      - path: Armature/Main/arm.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1/pincerB.1_end
+        weight: 1
+      - path: Armature/Main/arm.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2/pincerB.2_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|Idle
+      takeName: Armature|Idle
+      firstFrame: 0
+      lastFrame: 1
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Main
+        weight: 1
+      - path: Armature/Main/arm.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0/pincerB.0_end
+        weight: 1
+      - path: Armature/Main/arm.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1/pincerB.1_end
+        weight: 1
+      - path: Armature/Main/arm.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2/pincerB.2_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|IdleProne
+      takeName: Armature|IdleProne
+      firstFrame: 0
+      lastFrame: 180
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 1
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Main
+        weight: 1
+      - path: Armature/Main/arm.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0/pincerB.0_end
+        weight: 1
+      - path: Armature/Main/arm.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1/pincerB.1_end
+        weight: 1
+      - path: Armature/Main/arm.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2/pincerB.2_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    - serializedVersion: 16
+      name: Armature|Open
+      takeName: Armature|Open
+      firstFrame: 0
+      lastFrame: 59
+      wrapMode: 0
+      orientationOffsetY: 0
+      level: 0
+      cycleOffset: 0
+      loop: 0
+      hasAdditiveReferencePose: 0
+      loopTime: 0
+      loopBlend: 0
+      loopBlendOrientation: 0
+      loopBlendPositionY: 0
+      loopBlendPositionXZ: 0
+      keepOriginalOrientation: 0
+      keepOriginalPositionY: 1
+      keepOriginalPositionXZ: 0
+      heightFromFeet: 0
+      mirror: 0
+      bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
+      curves: []
+      events: []
+      transformMask:
+      - path: 
+        weight: 1
+      - path: Armature
+        weight: 1
+      - path: Armature/Main
+        weight: 1
+      - path: Armature/Main/arm.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0
+        weight: 1
+      - path: Armature/Main/arm.0/pincerA.0/pincerB.0/pincerB.0_end
+        weight: 1
+      - path: Armature/Main/arm.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1
+        weight: 1
+      - path: Armature/Main/arm.1/pincerA.1/pincerB.1/pincerB.1_end
+        weight: 1
+      - path: Armature/Main/arm.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2
+        weight: 1
+      - path: Armature/Main/arm.2/pincerA.2/pincerB.2/pincerB.2_end
+        weight: 1
+      - path: Cube
+        weight: 1
+      maskType: 3
+      maskSource: {instanceID: 0}
+      additiveReferencePoseFrame: 0
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
