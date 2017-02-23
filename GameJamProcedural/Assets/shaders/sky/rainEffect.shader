@@ -48,7 +48,7 @@
 
 			float2 drop(inout float2 p)
 			{
-				float2 mv = _TimeOfDay * float2(0.5, 1.0) * 0.15;
+				float2 mv = _TimeOfDay * float2(0.5, -1.0) * 0.15;
 
 				float drh = 0.0;
 				float hl = 0.0;
@@ -65,6 +65,7 @@
 
 					float2 q = (frac((p - mv) * sz + rnd.xy) - 0.5) / sz;
 					mv *= 1.06;
+                    q.y *= -1;
 
 					float l = length(q + pow(abs(dot(q, float2(1.0, 0.4))), 0.7) * (fd * 0.2 + 0.1));
 					if (l < r)
@@ -101,7 +102,7 @@
 							)
 							+ float2(q.y*_CamForward.z*0.3,0) 
 							//+ float2(_TimeOfDay*0.02, -_TimeOfDay*0.02)
-							+ float2(0, -_TimeOfDay*0.2) 
+							+ float2(0, _TimeOfDay*0.2) 
 							+ float2(0,  (1 - _CamForward.z)*0.02)
 							);
 					
