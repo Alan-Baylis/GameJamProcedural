@@ -73,7 +73,7 @@ public class Chunk : MonoBehaviour {
             mf.mesh = unityMesh;
             mc.sharedMesh = unityMesh;
             meshCreated = true;
-            Debug.Log("Chunk " + originX + " " + originY + " " + originZ + " généré (" + finalFaces.Length + " triangles)");
+            //Debug.Log("Chunk " + originX + " " + originY + " " + originZ + " généré (" + finalFaces.Length + " triangles)");
         }
     }
     

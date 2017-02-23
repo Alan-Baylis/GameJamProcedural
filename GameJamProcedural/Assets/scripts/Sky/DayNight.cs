@@ -4,20 +4,8 @@ using System.Collections;
 public class DayNight : MonoBehaviour
 {
     public Light sun;
-    void Start()
-    {
-        // Creating everything needed to demonstrate this from a single cube
-        player = this.transform;
-        GameObject floor = GameObject.CreatePrimitive(PrimitiveType.Plane);
-        floor.transform.position = player.position + 0.5f * Vector3.down;
-    }
-
     public Transform player;
-
-    //public GameObject sun;
-    public GameObject moon;
-
-    public float radius = 6;
+    public float radius = 100;
 
     public Color dayTimeSkyColor = new Color(0.31f, 0.88f, 1f);
     public Color midDaySkyColor = new Color(0.58f, 0.88f, 1f);
@@ -39,12 +27,21 @@ public class DayNight : MonoBehaviour
     public const float startOfNighttime = startOfDusk + duskRLSeconds / gameDayRLSeconds;
     public const float startOfSunset = startOfNighttime + nighttimeRLSeconds / gameDayRLSeconds;
 
+    float intensity =0;
+
 
     private float timeRT = 0;
     public float TimeOfDay // game time 0 .. 1
     {
         get { return timeRT / gameDayRLSeconds; }
         set { timeRT = value * gameDayRLSeconds; }
+    }
+
+    void Start()
+    {
+        // Creating everything needed to demonstrate this from a single cube
+        player = this.transform;
+        intensity = sun.intensity;
     }
 
     void Update()
@@ -57,6 +54,12 @@ public class DayNight : MonoBehaviour
         Vector3 midpoint = player.position; midpoint.y -= 0.5f; //midpoint = playerposition at floor height
         sun.transform.position = midpoint + Quaternion.Euler(0, 0, sunangle) * (radius * Vector3.right);
         sun.transform.LookAt(midpoint);
+        if (sunangle > 180)
+        {
+            Debug.Log(sun.intensity);
+            sun.intensity = 0;
+        }
+        else sun.intensity = intensity;
     }
 
     Color CalculateColor(Color dayTime, Color midDay, Color nightTime)
