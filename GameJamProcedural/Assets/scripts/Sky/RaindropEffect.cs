@@ -4,13 +4,21 @@ using UnityEngine;
 
 public class RaindropEffect : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+    private Material material;
+
+
+    // Use this for initialization
+    void Start () {
+        material = new Material(Shader.Find("Hidden/rainEffect"));
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void OnRenderImage(RenderTexture source, RenderTexture destination)
+    {
+        Graphics.Blit(source, destination, material);
+    }
 }
