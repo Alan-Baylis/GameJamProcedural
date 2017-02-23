@@ -44,8 +44,7 @@
 				o.uv = v.uv;
 				return o;
 			}
-
-
+            
 			float2 drop(inout float2 p)
 			{
 				float2 mv = _TimeOfDay * float2(0.5, -1.0) * 0.15;
@@ -54,12 +53,12 @@
 				float hl = 0.0;
 
 				float4 rnd = float4(0.1, 0.2, 0.3, 0.4);
-				for (int i = 0; i < 20; i++)
+				for (int i = 0; i < 10; i++)
 				{
 					rnd = frac(sin(rnd * 2.184972) * 190723.58961);
 					float fd = frac(_TimeOfDay * 0.2 + rnd.w);
 					fd = exp(fd * -4.0);
-					float r = 0.025 * (rnd.w * 1.5 + 1.0);
+					float r = 0.020 * (rnd.w * 1.5 + 1.0);
 					float sz = 0.35;
 
 
@@ -71,7 +70,8 @@
 					if (l < r)
 					{
 						float h = sqrt(r * r - l * l);
-						drh = max(drh, h * fd);
+                        float hfd = h*fd;
+                        drh = hfd; // ou max(drh, hfd);
 					}
 					hl += exp(length(q - float2(-0.02, 0.01)) * -30.0) * 0.4 * fd;
 				}

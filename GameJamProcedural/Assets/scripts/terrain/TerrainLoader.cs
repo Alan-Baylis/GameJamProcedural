@@ -286,8 +286,11 @@ public class TerrainLoader : MonoBehaviour {
         return (chunk.transform.localPosition + new Vector3(chunkSize*.5f, chunkSize*.5f, chunkSize*.5f) - camPos).sqrMagnitude;
     }
     
-    void AddChunk(Chunk chunk)
+    public Chunk getChunkFromPosition(Vector3 position)
     {
-        
+        int chunkIdX = (int) (position.x / chunkSize);
+        int chunkIdY = (int) (position.y / chunkSize);
+        int chunkIdZ = (int) (position.z / chunkSize);
+        return getChunkFromId(chunkIdX, chunkIdY, chunkIdZ);
     }
 }
