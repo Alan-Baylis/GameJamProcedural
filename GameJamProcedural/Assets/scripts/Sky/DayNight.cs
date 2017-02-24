@@ -56,7 +56,7 @@ public class DayNight : MonoBehaviour
         sun.transform.LookAt(midpoint);
         if (sunangle > 180)
         {
-            Debug.Log(sun.intensity);
+            // Debug.Log(sun.intensity);
             sun.intensity = 0;
         }
         else sun.intensity = intensity;

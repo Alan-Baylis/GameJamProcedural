@@ -18,6 +18,7 @@ public class TerrainLoader : MonoBehaviour {
     int lastChunkIdY;
     int lastChunkIdZ;
     int maxThreads;
+    public static bool allowChunkLoading = false;
     
 	void Start () {
         density = new Density(2);
@@ -67,6 +68,7 @@ public class TerrainLoader : MonoBehaviour {
     }
 	
 	void Update () {
+        allowChunkLoading = true;
 		camPos = Camera.main.transform.position;
         int chunkIdX = (int) (camPos.x / chunkSize);
         int chunkIdY = (int) (camPos.y / chunkSize);
@@ -78,6 +80,7 @@ public class TerrainLoader : MonoBehaviour {
         if (camPos.z < 0)
             chunkIdZ -= 1;
         
+        UnityEngine.Profiling.Profiler.BeginSample("ParseChunksToGenerate");
         if (chunkIdX != lastChunkIdX ||
             chunkIdY != lastChunkIdY ||
             chunkIdZ != lastChunkIdZ)
@@ -153,15 +156,18 @@ public class TerrainLoader : MonoBehaviour {
                             chunk.transform.localPosition = chunkPos;
                             chunk.idX = thisChunkIdX; chunk.idY = thisChunkIdY; chunk.idZ = thisChunkIdZ;
                         }
-                        else
+                        // else
                             // le nouveau chunk est plus loin que tous les chunks actuels -> normalement ne devrait pas arriver, dans le doute on l'ignore
-                            Debug.Log("Trop de chunks dans la liste de rendu, on ignore les nouveaux chunks trop loin");
+                            // Debug.Log("Trop de chunks dans la liste de rendu, on ignore les nouveaux chunks trop loin");
                     }
                 }
             }
         }
+        UnityEngine.Profiling.Profiler.EndSample();
         
+        UnityEngine.Profiling.Profiler.BeginSample("CheckChunksToBuild");
         CheckChunksToBuild();
+        UnityEngine.Profiling.Profiler.EndSample();
 	}
     
     void CheckChunksToBuild()
@@ -286,11 +292,104 @@ public class TerrainLoader : MonoBehaviour {
         return (chunk.transform.localPosition + new Vector3(chunkSize*.5f, chunkSize*.5f, chunkSize*.5f) - camPos).sqrMagnitude;
     }
     
-    public Chunk getChunkFromPosition(Vector3 position)
+    public bool isInNewBlock(Boids.BoidObject boid)
     {
-        int chunkIdX = (int) (position.x / chunkSize);
-        int chunkIdY = (int) (position.y / chunkSize);
-        int chunkIdZ = (int) (position.z / chunkSize);
-        return getChunkFromId(chunkIdX, chunkIdY, chunkIdZ);
+        float blockSize = chunkSize / chunkResolution;
+        if (boid.currentChunk != null && !isInBBox(
+                boid.obj.position,
+                new Vector3(boid.currentChunk.originX, boid.currentChunk.originY, boid.currentChunk.originZ),
+                new Vector3(chunkSize, chunkSize, chunkSize)))
+            boid.currentChunk = null;
+        if (boid.currentChunk != null && boid.currentChunkBlock != null && !isInBBox(
+                boid.obj.position,
+                new Vector3(boid.currentChunk.originX+blockSize*boid.currentChunkBlockIndex[0],
+                            boid.currentChunk.originY+blockSize*boid.currentChunkBlockIndex[1],
+                            boid.currentChunk.originZ+blockSize*boid.currentChunkBlockIndex[2]),
+                new Vector3(blockSize, blockSize, blockSize)))
+            boid.currentChunkBlock = null;
+        if (boid.currentChunk == null)
+        {
+            Vector3 pos = boid.obj.position;
+            int chunkIdX = (int) (pos.x / chunkSize);
+            int chunkIdY = (int) (pos.y / chunkSize);
+            int chunkIdZ = (int) (pos.z / chunkSize);
+            if (pos.x < 0) chunkIdX -= 1; if (pos.y < 0) chunkIdY -= 1; if (pos.z < 0) chunkIdZ -= 1;
+            Chunk chunk = getChunkFromId(chunkIdX, chunkIdY, chunkIdZ);
+            boid.currentChunk = chunk;
+            if (chunk == null)
+                return false; // en dehors d'un chunk chargé
+            boid.currentChunkBlock = null;
+        }
+        if (boid.currentChunkBlock == null)
+        {
+            Vector3 pos = boid.obj.position;
+            Chunk chunk = boid.currentChunk;
+            Vector3 posInChunk = pos - new Vector3(chunk.originX, chunk.originY, chunk.originZ);
+            boid.currentChunkBlockIndex[0] = (int) (posInChunk.x / blockSize);
+            boid.currentChunkBlockIndex[1] = (int) (posInChunk.y / blockSize);
+            boid.currentChunkBlockIndex[2] = (int) (posInChunk.z / blockSize);
+            if (posInChunk.x < 0) boid.currentChunkBlockIndex[0] -= 1;
+            if (posInChunk.y < 0) boid.currentChunkBlockIndex[1] -= 1;
+            if (posInChunk.z < 0) boid.currentChunkBlockIndex[2] -= 1;
+            Chunk.Block block = chunk.get(boid.currentChunkBlockIndex[0], boid.currentChunkBlockIndex[1], boid.currentChunkBlockIndex[2]);
+            boid.currentChunkBlock = block;
+            return true;
+        }
+        
+        return false;
+    }
+    
+    bool isInBBox(Vector3 position, Vector3 bboxLowerCorner, Vector3 bboxSize)
+    {
+        Vector3 upperBound = bboxLowerCorner + bboxSize;
+        if (
+            position.x > bboxLowerCorner.x &&
+            position.y > bboxLowerCorner.y &&
+            position.z > bboxLowerCorner.z &&
+            position.x < upperBound.x &&
+            position.y < upperBound.y &&
+            position.z < upperBound.z
+        )
+            return true;
+        return false;
+    }
+    
+    public Chunk.Block getBlock(Chunk chunk, int blockIdX, int blockIdY, int blockIdZ)
+    {
+        if (blockIdX < 0)
+        {
+            chunk = getChunkFromId(chunk.idX-1, chunk.idY, chunk.idZ);
+            blockIdX += chunkResolution;
+        }
+        if (blockIdY < 0)
+        {
+            chunk = getChunkFromId(chunk.idX, chunk.idY-1, chunk.idZ);
+            blockIdY += chunkResolution;
+        }
+        if (blockIdZ < 0)
+        {
+            chunk = getChunkFromId(chunk.idX, chunk.idY, chunk.idZ-1);
+            blockIdZ += chunkResolution;
+        }
+        
+        if (blockIdX > chunkResolution)
+        {
+            chunk = getChunkFromId(chunk.idX+1, chunk.idY, chunk.idZ);
+            blockIdX -= chunkResolution;
+        }
+        if (blockIdY > chunkResolution)
+        {
+            chunk = getChunkFromId(chunk.idX, chunk.idY+1, chunk.idZ);
+            blockIdY -= chunkResolution;
+        }
+        if (blockIdZ > chunkResolution)
+        {
+            chunk = getChunkFromId(chunk.idX, chunk.idY, chunk.idZ+1);
+            blockIdZ -= chunkResolution;
+        }
+        if (chunk == null)
+            return null;
+        
+        return chunk.get(blockIdX, blockIdY, blockIdZ);
     }
 }

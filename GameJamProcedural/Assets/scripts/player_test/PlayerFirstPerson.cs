@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
-// using UnityStandardAssets.CrossPlatformInput;
 
 public class PlayerFirstPerson : MonoBehaviour {
     public CharacterController controller;
     public Camera renderCamera;
+    public BlinkDistortion blinkDistortionEffect;
     public float xSensitivity = 3.5f;
     public float ySensitivity = 3.5f;
     public float walkSpeed = 1.3f;
@@ -14,6 +14,12 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float sprintSpeed = 10f;
     public float flySprintSpeed = 30f;
     public float jumpForce = 2f;
+    public float blinkDecreaseRate = 70f;
+    public float blinkIncreaseRate = 4f;
+    public float blinkVelocityIncreaseRate = .05f;
+    public float blinkGroundedDecreaseRate = 20f;
+    public float blinkCooldown = 1f;
+    public UnityEngine.UI.Image uiBlinkFillBar;
     
     public Vector3 velocity;
     
@@ -30,9 +36,14 @@ public class PlayerFirstPerson : MonoBehaviour {
     bool toggleWalk = false;
     bool doJump = false;
     bool grounded = false;
+    bool blinking = false;
     public bool flymode = false;
     public bool autoMove = false;
     bool autoMoveLockForward = false;
+    float blinkFactor = 0;
+    float currentBlinkPoints = 100f;
+    float defaultBlinkPoints = 100f;
+    float blinkCooldownTimer = 0;
     
     CollisionFlags collisionFlags;
     bool lockInput;
@@ -42,6 +53,9 @@ public class PlayerFirstPerson : MonoBehaviour {
         velocity = new Vector3(0, 0, 0);
         // SetCursorLock(true);
         currentSpeed = MovementSpeed.idle;
+        
+        defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;
+        currentBlinkPoints = defaultBlinkPoints;
 	}
 	
 	void Update () {
@@ -78,6 +92,50 @@ public class PlayerFirstPerson : MonoBehaviour {
             autoMove = !autoMove;
             autoMoveLockForward = autoMove;
         }
+        
+        if (Input.GetButtonDown("Fire1") && currentBlinkPoints > .5*defaultBlinkPoints && blinkCooldownTimer < 0)
+            blinking = true;
+        if (Input.GetButtonUp("Fire1") && blinking)
+        {
+            blinking = false;
+            blinkCooldownTimer = blinkCooldown;
+        }
+        blinkCooldownTimer -= Time.deltaTime;
+        if (blinking)
+        {
+            blinkFactor += Time.deltaTime*8;
+            currentBlinkPoints -= blinkFactor * Time.deltaTime * blinkDecreaseRate;
+            if (currentBlinkPoints < 0)
+                blinking = false;
+        }
+        else
+        {
+            blinkFactor -= Time.deltaTime*2;
+            if (currentBlinkPoints < defaultBlinkPoints)
+            {
+                currentBlinkPoints += (1-blinkFactor) * Time.deltaTime * blinkIncreaseRate;
+                currentBlinkPoints = Mathf.Clamp(currentBlinkPoints, 0, defaultBlinkPoints);
+            }
+        }
+        if (!grounded && currentBlinkPoints < 100)
+        {
+            currentBlinkPoints += (1-blinkFactor) * Time.deltaTime * blinkVelocityIncreaseRate * velocity.magnitude;
+            currentBlinkPoints = Mathf.Clamp(currentBlinkPoints, 0, 100);
+        }
+        else if (grounded && currentBlinkPoints > defaultBlinkPoints)
+        {
+            currentBlinkPoints -= (1-blinkFactor) * Time.deltaTime * blinkGroundedDecreaseRate;
+            currentBlinkPoints = Mathf.Clamp(currentBlinkPoints, defaultBlinkPoints, 100);
+        }
+        blinkFactor = Mathf.Clamp(blinkFactor, 0, 1);
+        blinkDistortionEffect.intensity = blinkFactor * 80;
+        uiBlinkFillBar.fillAmount = currentBlinkPoints / 100f;
+        if (currentBlinkPoints < defaultBlinkPoints*.5f)
+            uiBlinkFillBar.color = Color.red;
+        else if (currentBlinkPoints > defaultBlinkPoints*1.01f)
+            uiBlinkFillBar.color = Color.green;
+        else
+            uiBlinkFillBar.color = Color.white;
         
         float forwardInput = Input.GetAxisRaw("Vertical");
         float rightInput = Input.GetAxisRaw("Horizontal");
@@ -120,7 +178,8 @@ public class PlayerFirstPerson : MonoBehaviour {
         float step = Time.fixedDeltaTime;
         
         if (!flymode)
-            velocity += Physics.gravity*step;
+            velocity += Physics.gravity*step * 2;
+        velocity *= 1 - blinkFactor * step;
         
         Vector3 movementVelocity = new Vector3(moveDirection.x, moveDirection.y, moveDirection.z);
         float movementSpeed;
@@ -164,15 +223,22 @@ public class PlayerFirstPerson : MonoBehaviour {
             }
         }
         
+        movementVelocity *= 1-blinkFactor;
+        Vector3 blink = Vector3.zero;
+        blink.z = Mathf.Cos(-yRotation / 180f * Mathf.PI) * Mathf.Cos(xRotation / 180f * Mathf.PI);
+        blink.x = Mathf.Sin(yRotation / 180f * Mathf.PI) * Mathf.Cos(xRotation / 180f * Mathf.PI);
+        blink.y = Mathf.Sin(xRotation / 180f * Mathf.PI);
+        blink *= blinkFactor * 90;
+        
         if (flymode)
         {
-            controller.transform.Translate(movementVelocity*step);
+            controller.transform.Translate((movementVelocity+blink)*step);
             collisionFlags = CollisionFlags.None;
         }
         else
         {
-            Vector3 absoluteMovement = movementVelocity;
-            absoluteMovement = transform.localRotation * absoluteMovement + velocity;
+            Vector3 absoluteMovement = movementVelocity + blink;
+            absoluteMovement = transform.localRotation * absoluteMovement + velocity * (1-blinkFactor);
             collisionFlags = controller.Move(absoluteMovement * step);
         }
         if ((collisionFlags & CollisionFlags.Below) != 0)

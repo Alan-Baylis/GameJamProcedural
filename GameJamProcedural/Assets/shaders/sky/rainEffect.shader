@@ -53,12 +53,12 @@
 				float hl = 0.0;
 
 				float4 rnd = float4(0.1, 0.2, 0.3, 0.4);
-				for (int i = 0; i < 10; i++)
+				for (int i = 0; i < 15; i++)
 				{
 					rnd = frac(sin(rnd * 2.184972) * 190723.58961);
 					float fd = frac(_TimeOfDay * 0.2 + rnd.w);
 					fd = exp(fd * -4.0);
-					float r = 0.020 * (rnd.w * 1.5 + 1.0);
+					float r = 0.008 * (rnd.w * 1.5 + 1.0);
 					float sz = 0.35;
 
 

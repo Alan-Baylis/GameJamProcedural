@@ -65,17 +65,17 @@ public class Chunk : MonoBehaviour {
     
     void Update()
     {
-        if (generationDone && !meshCreated)
+        if (generationDone && !meshCreated && TerrainLoader.allowChunkLoading)
         {
+            TerrainLoader.allowChunkLoading = false;
             unityMesh.name = "proter-" + originX + "-" + originZ + "-" + originY;
-            unityMesh.Clear();
             unityMesh.vertices = finalVertices;
             unityMesh.normals = finalNormals;
             unityMesh.triangles = finalFaces;
             // mesh.uvs = uvs;
             
             mf.sharedMesh = unityMesh;
-            mc.sharedMesh = unityMesh;
+            // mc.sharedMesh = unityMesh;
             meshCreated = true;
             // Debug.Log("Chunk " + originX + " " + originY + " " + originZ + " généré (" + finalFaces.Length + " triangles)");
         }
@@ -107,6 +107,7 @@ public class Chunk : MonoBehaviour {
     {
         mf.sharedMesh = null;
         mc.sharedMesh = null;
+        unityMesh.Clear();
         meshCreated = false;
         building = false;
         generationDone = false;
@@ -181,7 +182,7 @@ public class Chunk : MonoBehaviour {
         return block;
     }
     
-    Block get(int x, int y, int z)
+    public Block get(int x, int y, int z)
     {
         return blocks[x + y*(resolutionX+1) + z*(resolutionX+1)*(resolutionY+1)];
     }
