@@ -5,9 +5,12 @@ using UnityEngine;
 public class shootBoids : MonoBehaviour {
     public int scoreJoueur;
     public GameObject arme;
+    float lineRendererTime = 0.3f;
+    float timeStart;
 	// Use this for initialization
 	void Start () {
         scoreJoueur = 0;
+        timeStart = Time.time;
     }
 
     public LineRenderer lineRenderer;
@@ -19,7 +22,9 @@ public class shootBoids : MonoBehaviour {
         RaycastHit hit;
         if(Input.GetMouseButtonDown(1))
         {
-            lineRenderer.SetPosition(0, arme.transform.position);// + Camera.main.transform.right*.3f - Camera.main.transform.up * .3f);
+            lineRenderer.enabled = true;
+            timeStart = Time.time;
+            lineRenderer.SetPosition(0, arme.transform.position);
             lineRenderer.SetPosition(1, arme.transform.position+arme.transform.right+Camera.main.transform.forward*100);
 
             if (Physics.Raycast(Camera.main.transform.position, Camera.main.transform.forward, out hit))
@@ -32,11 +37,16 @@ public class shootBoids : MonoBehaviour {
                 }
             }
         }
+
+        if(lineRendererTime < Time.time-timeStart && lineRenderer.enabled)
+        {
+            lineRenderer.enabled = false;
+        }
     }
 
     void OnGUI()
     {
-        Rect rect = new Rect(500, 10, 120, 20);
+        Rect rect = new Rect(500, 10, 120, 70);
         GUI.Label(rect, "Score: " + scoreJoueur); 
     }
 }

@@ -47,9 +47,13 @@ public class PlayerFirstPerson : MonoBehaviour {
     float blinkCooldownTimer = 0;
     
     CollisionFlags collisionFlags;
-    bool lockInput;
     float hitFXTimer = 0;
     float hitFXDuration = .3f;
+    public bool lockInput;
+
+    //Debug Menu to appear
+    public DayNight dayNight;
+    bool debugMenu;
 
 	void Start () {
         moveDirection = new Vector3(0, 0, 0);
@@ -59,9 +63,14 @@ public class PlayerFirstPerson : MonoBehaviour {
         
         defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;
         currentBlinkPoints = defaultBlinkPoints;
+        debugMenu = dayNight.debugMenu;
 	}
 	
 	void Update () {
+        //DebugMenu
+        debugMenu = dayNight.debugMenu;
+        //
+
         if (Input.GetButtonDown("Flymode"))
         {
             flymode = !flymode;
@@ -96,7 +105,7 @@ public class PlayerFirstPerson : MonoBehaviour {
             autoMoveLockForward = autoMove;
         }
         
-        if (Input.GetButtonDown("Fire1") && currentBlinkPoints > .5*defaultBlinkPoints && blinkCooldownTimer < 0)
+        if (Input.GetButtonDown("Fire1") && currentBlinkPoints > .5*defaultBlinkPoints && blinkCooldownTimer < 0 && !debugMenu)
             blinking = true;
         if (Input.GetButtonUp("Fire1") && blinking)
         {
@@ -170,8 +179,11 @@ public class PlayerFirstPerson : MonoBehaviour {
         if (moveDirection.magnitude < .01 && moveDirection.magnitude > -.01 && !doJump)
             currentSpeed = MovementSpeed.idle;
         moveDirection.Normalize();
-        
-        if (Input.GetKeyUp(KeyCode.Escape))
+        if(debugMenu)
+        {
+            SetCursorLock(false);
+        }
+        else if (Input.GetKeyUp(KeyCode.Escape))
             SetCursorLock(false);
         else if(Input.GetMouseButtonUp(0))
             SetCursorLock(true);

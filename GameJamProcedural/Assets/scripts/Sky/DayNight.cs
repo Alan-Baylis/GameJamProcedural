@@ -22,7 +22,9 @@ public class DayNight : MonoBehaviour
     public bool precipitation = false;
     public RaindropEffect raindropEffect;
 
-    // implementing minecraft PC defaults
+    //debug menu
+    public bool debugMenu;
+
     public const float daytimeRLSeconds = 10.0f * 60;
     public const float duskRLSeconds = 1.5f * 60;
     public const float nighttimeRLSeconds = 7.0f * 60;
@@ -49,6 +51,7 @@ public class DayNight : MonoBehaviour
         // Creating everything needed to demonstrate this from a single cube
         player = this.transform;
         intensity = sun.intensity;
+        debugMenu = false;
     }
 
     void Update()
@@ -79,6 +82,12 @@ public class DayNight : MonoBehaviour
         //Precipitation
         raindropEffect.enabled = precipitation;
 
+        //Debug Menu
+        if (Input.GetKeyDown("n"))
+        {
+            debugMenu = !debugMenu;
+        }
+
     }
 
     Color CalculateColor(Color dayTime, Color midDay, Color nightTime)
@@ -97,12 +106,15 @@ public class DayNight : MonoBehaviour
 
     void OnGUI()
     {
-        Rect rect = new Rect(10, 10, 120, 20);
-        GUI.Label(rect, "time: " + TimeOfDay); rect.y += 20;
-        GUI.Label(rect, "timeRT: " + timeRT);
-        rect = new Rect(120, 10, 200, 10);
-        TimeOfDay = GUI.HorizontalSlider(rect, TimeOfDay, 0, 1);
-        rect = new Rect(10, 60, 120, 20);
-        precipitation = GUI.Toggle(rect, precipitation, " Precipitations");
+        if(debugMenu)
+        {
+            Rect rect = new Rect(10, 10, 120, 20);
+            GUI.Label(rect, "time: " + TimeOfDay); rect.y += 20;
+            GUI.Label(rect, "timeRT: " + timeRT);
+            rect = new Rect(120, 10, 200, 10);
+            TimeOfDay = GUI.HorizontalSlider(rect, TimeOfDay, 0, 1);
+            rect = new Rect(10, 60, 120, 20);
+            precipitation = GUI.Toggle(rect, precipitation, " Precipitations");
+        }
     }
 }
