@@ -11,9 +11,14 @@ public class Boids : MonoBehaviour {
         public Chunk currentChunk = null;
         public int[] currentChunkBlockIndex;
         public Chunk.Block currentChunkBlock = null;
+        public bool seesPlayer = true;
+        public Vector3 lastKnownPlayerPosition;
+        public DroidShootPlayer shootScript;
         public BoidObject(GameObject o, Transform parent, PlayerFirstPerson playerControlScript) {
             obj = Instantiate(o, parent.position, Quaternion.identity).transform;
-            obj.GetComponent<DroidShootPlayer>().player = playerControlScript;
+            lastKnownPlayerPosition = parent.position;
+            shootScript = obj.GetComponent<DroidShootPlayer>();
+            shootScript.player = playerControlScript;
             velocity = Vector3.zero;
             terrainAvoidanceVelocity = Vector3.zero;
             currentChunkBlockIndex = new int[3];
@@ -47,6 +52,8 @@ public class Boids : MonoBehaviour {
     void Update () {
         foreach (BoidObject boid in boidObjs)
         {
+            if (!boid.obj.gameObject.activeSelf)
+                continue;
             if (terrain.isInNewBlock(boid))
             {
                 boid.terrainAvoidanceVelocity = Vector3.zero;
@@ -98,6 +105,26 @@ public class Boids : MonoBehaviour {
                             boid.terrainAvoidanceVelocity += block.direction / (shellId+1) * boidTerrainRepulsivity;
                     }
                 }
+                
+                RaycastHit hit;
+                if (Physics.Raycast(boid.obj.position, (player.position - boid.obj.position), out hit))
+                {
+                    if (hit.collider.tag == "Player")
+                    {
+                        boid.shootScript.seesPlayer = true;
+                        boid.seesPlayer = true;
+                    }
+                    else
+                    {
+                        boid.shootScript.seesPlayer = false;
+                        boid.seesPlayer = false;
+                    }
+                }
+                else
+                {
+                    boid.shootScript.seesPlayer = false;
+                    boid.seesPlayer = false;
+                }
             }
             
             boid.velocity += boid.terrainAvoidanceVelocity;
@@ -105,7 +132,9 @@ public class Boids : MonoBehaviour {
             boid.velocity *= boidVelocityDampen;
             
             // se recentre sur le joueur
-            boid.velocity += (player.position - boid.obj.position) / boidMoveToPlayerSlowness;
+            if (boid.seesPlayer)
+                boid.lastKnownPlayerPosition = player.position;
+            boid.velocity += (boid.lastKnownPlayerPosition - boid.obj.position) / boidMoveToPlayerSlowness;
             
             // évite ses congénères
             foreach (BoidObject other in boidObjs)

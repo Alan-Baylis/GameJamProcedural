@@ -20,9 +20,8 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float blinkGroundedDecreaseRate = 20f;
     public float blinkCooldown = 1f;
     public UnityEngine.UI.Image uiBlinkFillBar;
-    public UnityEngine.UI.Image uiHealthFillBar;
-    float currentHealth = 100f;
-
+    public UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration hitShader;
+    
     public Vector3 velocity;
     
     Vector3 moveDirection;
@@ -48,6 +47,8 @@ public class PlayerFirstPerson : MonoBehaviour {
     float blinkCooldownTimer = 0;
     
     CollisionFlags collisionFlags;
+    float hitFXTimer = 0;
+    float hitFXDuration = .3f;
     public bool lockInput;
 
     //Debug Menu to appear
@@ -63,8 +64,6 @@ public class PlayerFirstPerson : MonoBehaviour {
         defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;
         currentBlinkPoints = defaultBlinkPoints;
         debugMenu = dayNight.debugMenu;
-
-        uiHealthFillBar.fillAmount = currentHealth/100f ;
 	}
 	
 	void Update () {
@@ -188,10 +187,13 @@ public class PlayerFirstPerson : MonoBehaviour {
             SetCursorLock(false);
         else if(Input.GetMouseButtonUp(0))
             SetCursorLock(true);
-
-        //Health bar
-        uiHealthFillBar.fillAmount = currentHealth/100f;
-    }
+        
+        hitShader.blur = .5f * (hitFXTimer / hitFXDuration);
+        hitShader.chromaticAberration = 15 * (hitFXTimer / hitFXDuration);
+        hitFXTimer -= Time.deltaTime;
+        if (hitFXTimer < 0)
+            hitFXTimer = 0;
+	}
     
 	void FixedUpdate () {
         float step = Time.fixedDeltaTime;
@@ -287,6 +289,6 @@ public class PlayerFirstPerson : MonoBehaviour {
     
     public void TakeHit()
     {
-        currentHealth -= 10f;
+        hitFXTimer = hitFXDuration;
     }
 }

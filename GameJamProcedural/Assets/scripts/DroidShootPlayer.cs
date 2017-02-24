@@ -9,6 +9,7 @@ public class DroidShootPlayer : MonoBehaviour {
     public float shootCooldownRandomAdd = 1.2f;
     public float accuracyPercent = 20;
     public GameObject beamPrefab;
+    public bool seesPlayer = false;
     
     float shootCooldownTimer = 0;
     
@@ -19,17 +20,16 @@ public class DroidShootPlayer : MonoBehaviour {
         shootCooldownTimer -= Time.deltaTime;
         if (shootCooldownTimer < 0) shootCooldownTimer = 0;
         
-        Vector3 shootDirection = player.transform.position - transform.position;
-		if (shootDirection.sqrMagnitude < shootRange*shootRange)
+        if (shootCooldownTimer <= 0 && seesPlayer)
         {
-            if (shootCooldownTimer <= 0)
+            Vector3 shootDirection = player.transform.position - transform.position;
+            if (shootDirection.sqrMagnitude < shootRange*shootRange)
                 Shoot(shootDirection);
         }
 	}
     
     void Shoot(Vector3 shootDirection)
     {
-        Debug.Log("Shoot");
         shootCooldownTimer = shootCooldown * Random.value*shootCooldownRandomAdd;
         RaycastHit hit;
         if (Random.value * 100 > accuracyPercent)
@@ -40,7 +40,6 @@ public class DroidShootPlayer : MonoBehaviour {
         {
             GameObject laser = Instantiate(beamPrefab, transform.position, shootDirectionQuat);
             laser.transform.localScale = new Vector3(1,1,hit.distance);
-            Debug.Log("Hit " + hit.collider.gameObject.name);
             if (hit.collider.tag == "Player")
             {
                 Debug.Log("Hit player !");
