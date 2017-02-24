@@ -20,7 +20,9 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float blinkGroundedDecreaseRate = 20f;
     public float blinkCooldown = 1f;
     public UnityEngine.UI.Image uiBlinkFillBar;
-    
+    public UnityEngine.UI.Image uiHealthFillBar;
+    float currentHealth = 100f;
+
     public Vector3 velocity;
     
     Vector3 moveDirection;
@@ -61,6 +63,8 @@ public class PlayerFirstPerson : MonoBehaviour {
         defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;
         currentBlinkPoints = defaultBlinkPoints;
         debugMenu = dayNight.debugMenu;
+
+        uiHealthFillBar.fillAmount = currentHealth/100f ;
 	}
 	
 	void Update () {
@@ -184,7 +188,10 @@ public class PlayerFirstPerson : MonoBehaviour {
             SetCursorLock(false);
         else if(Input.GetMouseButtonUp(0))
             SetCursorLock(true);
-	}
+
+        //Health bar
+        uiHealthFillBar.fillAmount = currentHealth/100f;
+    }
     
 	void FixedUpdate () {
         float step = Time.fixedDeltaTime;
@@ -280,6 +287,6 @@ public class PlayerFirstPerson : MonoBehaviour {
     
     public void TakeHit()
     {
-        
+        currentHealth -= 10f;
     }
 }
