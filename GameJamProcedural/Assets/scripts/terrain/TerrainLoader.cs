@@ -322,6 +322,8 @@ public class TerrainLoader : MonoBehaviour {
         }
         if (boid.currentChunkBlock == null)
         {
+            if (!boid.currentChunk.generationDone)
+                return false;
             Vector3 pos = boid.obj.position;
             Chunk chunk = boid.currentChunk;
             Vector3 posInChunk = pos - new Vector3(chunk.originX, chunk.originY, chunk.originZ);

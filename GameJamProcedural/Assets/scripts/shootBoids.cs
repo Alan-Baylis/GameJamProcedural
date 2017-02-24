@@ -15,7 +15,7 @@ public class shootBoids : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        // Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if(Input.GetMouseButtonDown(1))
         {
