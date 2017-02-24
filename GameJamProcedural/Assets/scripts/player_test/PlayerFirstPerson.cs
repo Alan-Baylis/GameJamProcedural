@@ -60,7 +60,11 @@ public class PlayerFirstPerson : MonoBehaviour {
 	void Start () {
         moveDirection = new Vector3(0, 0, 0);
         velocity = new Vector3(0, 0, 0);
-        // SetCursorLock(true);
+        if (lockInput)
+        {
+            lockInput = false; // contournation de bug.
+            SetCursorLock(true);
+        }
         currentSpeed = MovementSpeed.idle;
         
         defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;

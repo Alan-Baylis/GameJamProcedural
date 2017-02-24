@@ -18,7 +18,6 @@ public class TerrainLoader : MonoBehaviour {
     int lastChunkIdY;
     int lastChunkIdZ;
     int maxThreads;
-    public static bool allowChunkLoading = false;
     
 	void Start () {
         density = new Density(2);
@@ -68,7 +67,6 @@ public class TerrainLoader : MonoBehaviour {
     }
 	
 	void Update () {
-        allowChunkLoading = true;
 		camPos = Camera.main.transform.position;
         int chunkIdX = (int) (camPos.x / chunkSize);
         int chunkIdY = (int) (camPos.y / chunkSize);
@@ -92,6 +90,9 @@ public class TerrainLoader : MonoBehaviour {
                 numChunksToGenerateXZ = 1;
             if (numChunksToGenerateY < 1)
                 numChunksToGenerateY = 1;
+            
+            for (int i=0; i<chunksToBuild.Length; i++)
+                chunksToBuild[i] = null;
             
             for (int x=0; x<numChunksToGenerateXZ; x++)
             for (int y=0; y<numChunksToGenerateY; y++)
@@ -172,6 +173,7 @@ public class TerrainLoader : MonoBehaviour {
             if (chunk != null && chunk.building && !chunk.generationDone)
                 chunksBeingBuilt++;
         
+        // maxThreads = 1;
         while (chunksBeingBuilt < maxThreads)
         {
             int closestChunkId = getClosestChunkId(chunksToBuild);
@@ -203,6 +205,7 @@ public class TerrainLoader : MonoBehaviour {
             {
                 // ENCORE pas assez de chunks disponibles dans la liste.
                 // on supprime un chunk lointain...
+                // Debug.Log("Toujours pas assez de chunk -> suppression d'un lointain");
                 int id = getFarthestChunkId(chunks);
                 Chunk chunk = chunksToBuild[closestChunkId];
                 Destroy(chunks[id]);
@@ -246,15 +249,15 @@ public class TerrainLoader : MonoBehaviour {
         }
     }
     
-    int getClosestChunkId(Chunk[] chunks)
+    int getClosestChunkId(Chunk[] chunksToCheck)
     {
         int closestChunkId = -1;
         float minDist = -1;
-        for (int i=1; i<chunks.Length; i++)
+        for (int i=0; i<chunksToCheck.Length; i++)
         {
-            if (chunks[i] == null)
+            if (chunksToCheck[i] == null)
                 continue;
-            float dist = getChunkSqrDistance(chunks[i]);
+            float dist = getChunkSqrDistance(chunksToCheck[i]);
             if (dist < minDist || closestChunkId == -1)
             {
                 minDist = dist;
@@ -264,15 +267,15 @@ public class TerrainLoader : MonoBehaviour {
         return closestChunkId;
     }
     
-    int getFarthestChunkId(Chunk[] chunks)
+    int getFarthestChunkId(Chunk[] chunksToCheck)
     {
         int farthestChunkId = -1;
         float maxDist = -1;
-        for (int i=1; i<chunks.Length; i++)
+        for (int i=0; i<chunksToCheck.Length; i++)
         {
-            if (chunks[i] == null)
+            if (chunksToCheck[i] == null)
                 continue;
-            float dist = getChunkSqrDistance(chunks[i]);
+            float dist = getChunkSqrDistance(chunksToCheck[i]);
             if (dist > maxDist || farthestChunkId == -1)
             {
                 maxDist = dist;

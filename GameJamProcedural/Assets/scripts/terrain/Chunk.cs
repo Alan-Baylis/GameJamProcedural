@@ -65,9 +65,8 @@ public class Chunk : MonoBehaviour {
     
     void Update()
     {
-        if (generationDone && !meshCreated && TerrainLoader.allowChunkLoading)
+        if (generationDone && !meshCreated)
         {
-            TerrainLoader.allowChunkLoading = false;
             unityMesh.name = "proter-" + originX + "-" + originZ + "-" + originY;
             unityMesh.vertices = finalVertices;
             unityMesh.normals = finalNormals;
@@ -130,8 +129,6 @@ public class Chunk : MonoBehaviour {
         blockSizeX = sizeX/resolutionX;
         blockSizeY = sizeY/resolutionY;
         blockSizeZ = sizeZ/resolutionZ;
-        blocks = new Block[(resolutionX+1) * (resolutionY+1) * (resolutionZ+1)];
-        mesh = new SimpleMesh();
         
         // generateThread = new Thread(new ThreadStart(generateAll));
         // generateThread.Start();
@@ -141,6 +138,8 @@ public class Chunk : MonoBehaviour {
     
     void generateAll(System.Object threadContext)
     {
+        blocks = new Block[(resolutionX+1) * (resolutionY+1) * (resolutionZ+1)];
+        mesh = new SimpleMesh();
         generationDone = false;
         meshCreated = false;
         generateBlocks(density);

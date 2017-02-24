@@ -46,7 +46,7 @@ public class Boids : MonoBehaviour {
     void Start () {
         boidObjs = new BoidObject[numBoids];
         for (int i=0; i<numBoids; i++)
-            boidObjs[i] = new BoidObject(boidPrefab, player, playerControlScript);
+            boidObjs[i] = new BoidObject(boidPrefab, transform, playerControlScript);
     }
     
     void Update () {
