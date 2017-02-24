@@ -80,7 +80,6 @@ public class TerrainLoader : MonoBehaviour {
         if (camPos.z < 0)
             chunkIdZ -= 1;
         
-        UnityEngine.Profiling.Profiler.BeginSample("ParseChunksToGenerate");
         if (chunkIdX != lastChunkIdX ||
             chunkIdY != lastChunkIdY ||
             chunkIdZ != lastChunkIdZ)
@@ -163,11 +162,7 @@ public class TerrainLoader : MonoBehaviour {
                 }
             }
         }
-        UnityEngine.Profiling.Profiler.EndSample();
-        
-        UnityEngine.Profiling.Profiler.BeginSample("CheckChunksToBuild");
         CheckChunksToBuild();
-        UnityEngine.Profiling.Profiler.EndSample();
 	}
     
     void CheckChunksToBuild()
@@ -226,7 +221,7 @@ public class TerrainLoader : MonoBehaviour {
         for (int i=0; i<chunks.Length; i++)
         {
             Chunk chunk = chunks[i];
-            if (chunk != null && chunk.generationDone && getChunkSqrDistance(chunk) > (maxChunkDistance*maxChunkDistance+maxChunkDistance))
+            if (chunk != null && chunk.generationDone && getChunkSqrDistance(chunk) > (maxChunkDistance*maxChunkDistance))
             {
                 // le chunk est trop loin - on l'enlève de la liste principale et on le met dans la liste "à recycler"
                 int repurposeId = -1;

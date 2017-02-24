@@ -20,6 +20,7 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float blinkGroundedDecreaseRate = 20f;
     public float blinkCooldown = 1f;
     public UnityEngine.UI.Image uiBlinkFillBar;
+    public UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration hitShader;
     
     public Vector3 velocity;
     
@@ -47,6 +48,8 @@ public class PlayerFirstPerson : MonoBehaviour {
     
     CollisionFlags collisionFlags;
     bool lockInput;
+    float hitFXTimer = 0;
+    float hitFXDuration = .3f;
 
 	void Start () {
         moveDirection = new Vector3(0, 0, 0);
@@ -172,6 +175,12 @@ public class PlayerFirstPerson : MonoBehaviour {
             SetCursorLock(false);
         else if(Input.GetMouseButtonUp(0))
             SetCursorLock(true);
+        
+        hitShader.blur = .5f * (hitFXTimer / hitFXDuration);
+        hitShader.chromaticAberration = 15 * (hitFXTimer / hitFXDuration);
+        hitFXTimer -= Time.deltaTime;
+        if (hitFXTimer < 0)
+            hitFXTimer = 0;
 	}
     
 	void FixedUpdate () {
@@ -268,6 +277,6 @@ public class PlayerFirstPerson : MonoBehaviour {
     
     public void TakeHit()
     {
-        
+        hitFXTimer = hitFXDuration;
     }
 }

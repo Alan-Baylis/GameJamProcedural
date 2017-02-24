@@ -6,7 +6,6 @@ public class AutodestroyObj : MonoBehaviour {
     public float timeout = 1;
 
 	void Start () {
-        Debug.Log("Inst");
 		StartCoroutine(Die());
 	}
     
