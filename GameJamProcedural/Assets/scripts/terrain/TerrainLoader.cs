@@ -333,6 +333,8 @@ public class TerrainLoader : MonoBehaviour {
             if (posInChunk.z < 0) boid.currentChunkBlockIndex[2] -= 1;
             Chunk.Block block = chunk.get(boid.currentChunkBlockIndex[0], boid.currentChunkBlockIndex[1], boid.currentChunkBlockIndex[2]);
             boid.currentChunkBlock = block;
+            if (block == null)
+                return false;
             return true;
         }
         
