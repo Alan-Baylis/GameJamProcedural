@@ -20,7 +20,9 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float blinkGroundedDecreaseRate = 20f;
     public float blinkCooldown = 1f;
     public UnityEngine.UI.Image uiBlinkFillBar;
+    public UnityEngine.UI.Image uiHealthBar;
     public UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration hitShader;
+    float currentHealth = 100;
     
     public Vector3 velocity;
     
@@ -142,6 +144,7 @@ public class PlayerFirstPerson : MonoBehaviour {
         blinkFactor = Mathf.Clamp(blinkFactor, 0, 1);
         blinkDistortionEffect.intensity = blinkFactor * 80;
         uiBlinkFillBar.fillAmount = currentBlinkPoints / 100f;
+        uiHealthBar.fillAmount = currentHealth / 100;
         if (currentBlinkPoints < defaultBlinkPoints*.5f)
             uiBlinkFillBar.color = Color.red;
         else if (currentBlinkPoints > defaultBlinkPoints*1.01f)
@@ -290,5 +293,6 @@ public class PlayerFirstPerson : MonoBehaviour {
     public void TakeHit()
     {
         hitFXTimer = hitFXDuration;
+        currentHealth -= 10;
     }
 }
