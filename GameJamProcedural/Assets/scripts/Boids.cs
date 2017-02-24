@@ -11,8 +11,9 @@ public class Boids : MonoBehaviour {
         public Chunk currentChunk = null;
         public int[] currentChunkBlockIndex;
         public Chunk.Block currentChunkBlock = null;
-        public BoidObject(GameObject o, Transform parent) {
+        public BoidObject(GameObject o, Transform parent, PlayerFirstPerson playerControlScript) {
             obj = Instantiate(o, parent.position, Quaternion.identity).transform;
+            obj.GetComponent<DroidShootPlayer>().player = playerControlScript;
             velocity = Vector3.zero;
             terrainAvoidanceVelocity = Vector3.zero;
             currentChunkBlockIndex = new int[3];
@@ -20,6 +21,7 @@ public class Boids : MonoBehaviour {
     }
     public BoidObject[] boidObjs;
     public Transform player;
+    public PlayerFirstPerson playerControlScript;
     
     public GameObject boidPrefab;
     public int numBoids = 10;
@@ -39,7 +41,7 @@ public class Boids : MonoBehaviour {
     void Start () {
         boidObjs = new BoidObject[numBoids];
         for (int i=0; i<numBoids; i++)
-            boidObjs[i] = new BoidObject(boidPrefab, player);
+            boidObjs[i] = new BoidObject(boidPrefab, player, playerControlScript);
     }
     
     void Update () {
@@ -107,7 +109,7 @@ public class Boids : MonoBehaviour {
             
             // évite ses congénères
             foreach (BoidObject other in boidObjs)
-                if (other != boid)
+                if (other != boid && other.obj.gameObject.activeSelf)
                     if ((other.obj.position - boid.obj.position).magnitude < boidToBoidDistance)
                         boid.velocity += (boid.obj.position - other.obj.position).normalized * boidToBoidRepulsivity * (boidToBoidDistance - (boid.obj.position - other.obj.position).magnitude);
             
@@ -117,11 +119,18 @@ public class Boids : MonoBehaviour {
             
             // se recentre sur le point central des boids
             Vector3 center = Vector3.zero;
+            int totalAdd = 0;
             foreach (BoidObject other in boidObjs)
-                if (other != boid)
+                if (other != boid && other.obj.gameObject.activeSelf)
+                {
                     center += other.obj.position;
-            center /= boidObjs.Length-1;
-            boid.velocity += (center - boid.obj.position) / boidFollowCenterSlowness;
+                    totalAdd++;
+                }
+            if (totalAdd > 0)
+            {
+                center /= totalAdd;
+                boid.velocity += (center - boid.obj.position) / boidFollowCenterSlowness;
+            }
             
             // assigne une vélocité minimale aux boids
             if (boid.velocity.magnitude < targetVelocity)

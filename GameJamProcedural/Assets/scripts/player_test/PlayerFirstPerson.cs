@@ -277,4 +277,9 @@ public class PlayerFirstPerson : MonoBehaviour {
             Cursor.visible = true;
         }
     }
+    
+    public void TakeHit()
+    {
+        
+    }
 }
