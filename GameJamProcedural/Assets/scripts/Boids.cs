@@ -41,6 +41,12 @@ public class Boids : MonoBehaviour {
     public float boidTerrainRepulsivity = 3;
     public int numBlockAvoidanceShells = 3;
     
+    Vector3 spVelocity = Vector3.zero;
+    public int spawnerMoveToPlayerSlowness = 5;
+    public float spawnerToPlayerDistance = 100;
+    public float spawnerToPlayerRepulsivity = 1.5f;
+    public float spawnerMaxSpeed = 20;
+    
     public float targetVelocity = 1;
     
     void Start () {
@@ -131,8 +137,8 @@ public class Boids : MonoBehaviour {
             
             boid.velocity *= boidVelocityDampen;
             
-            // se recentre sur le joueur
-            if (boid.seesPlayer)
+            // se recentre sur le joueur (si on peu le voir, ou bien si il est trop loin)
+            if (boid.seesPlayer || boid.currentChunkBlockIndex == null || boid.currentChunk == null)
                 boid.lastKnownPlayerPosition = player.position;
             boid.velocity += (boid.lastKnownPlayerPosition - boid.obj.position) / boidMoveToPlayerSlowness;
             
@@ -185,9 +191,28 @@ public class Boids : MonoBehaviour {
                 boid.currentChunkBlock = null;
                 boid.seesPlayer = false;
                 boid.lastKnownPlayerPosition = transform.position;
-                boid.obj.position = transform.position;
+                boid.obj.position = transform.position + Vector3.up * Random.value;
                 boid.shootScript.seesPlayer = false;
             }
         }
+        
+        
+        // On déplace le spawner pour qu'il suive à distance respectable le joueur... Le spawner est un boid lui-même
+        
+        Vector3 target = player.position;
+        target.y += 50; // pour éviter le terrain (la flemme de réécrire le code d'évitement...)
+        
+        // se recentre sur le joueur
+        spVelocity += (target - transform.position) / spawnerMoveToPlayerSlowness;
+        
+        // mais reste loin de lui
+        if ((target - transform.position).magnitude < spawnerToPlayerDistance)
+            spVelocity += (transform.position - target).normalized * spawnerToPlayerRepulsivity * (spawnerToPlayerDistance - (transform.position - player.position).magnitude);
+        
+        // on cappe la vitesse maximale de déplacement
+        if (spVelocity.sqrMagnitude > spawnerMaxSpeed*spawnerMaxSpeed)
+            spVelocity = spVelocity.normalized * spawnerMaxSpeed;
+        
+        transform.position += spVelocity * Time.deltaTime;
     }
 }
