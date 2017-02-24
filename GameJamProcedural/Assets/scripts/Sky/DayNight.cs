@@ -15,6 +15,13 @@ public class DayNight : MonoBehaviour
     public Color midDayTimeCloudColor = new Color(0.58f, 0.88f, 1f);
     public Color nightTimeCloudColor = new Color(0.04f, 0.19f, 0.27f);
 
+    public Color precipitationSkyColor = new Color(0.31f, 0.88f, 1f);
+    public Color precipitationCloudColor  = new Color(0.31f, 0.88f, 1f);
+
+
+    public bool precipitation = false;
+    public RaindropEffect raindropEffect;
+
     // implementing minecraft PC defaults
     public const float daytimeRLSeconds = 10.0f * 60;
     public const float duskRLSeconds = 1.5f * 60;
@@ -47,19 +54,31 @@ public class DayNight : MonoBehaviour
     void Update()
     {
         timeRT = (timeRT + Time.deltaTime) % gameDayRLSeconds;
-        Shader.SetGlobalColor("_SkyColor", CalculateColor(dayTimeSkyColor,midDaySkyColor,nightTimeSkyColor));
-        Shader.SetGlobalColor("_CloudColor", CalculateColor(dayTimeCloudColor,midDayTimeCloudColor,nightTimeCloudColor));
+        if(precipitation)
+        {
+            Shader.SetGlobalColor("_SkyColor", precipitationSkyColor);
+            Shader.SetGlobalColor("_CloudColor", precipitationCloudColor);
+        }
+        else
+        {
+            Shader.SetGlobalColor("_SkyColor", CalculateColor(dayTimeSkyColor, midDaySkyColor, nightTimeSkyColor));
+            Shader.SetGlobalColor("_CloudColor", CalculateColor(dayTimeCloudColor, midDayTimeCloudColor, nightTimeCloudColor));
+        }
         Shader.SetGlobalFloat("_TimeOfDay", timeRT);
         float sunangle = TimeOfDay * 360;
         Vector3 midpoint = player.position; midpoint.y -= 0.5f; //midpoint = playerposition at floor height
         sun.transform.position = midpoint + Quaternion.Euler(0, 0, sunangle) * (radius * Vector3.right);
         sun.transform.LookAt(midpoint);
+        //Sun horizon disable intensity
         if (sunangle > 180)
         {
-            Debug.Log(sun.intensity);
             sun.intensity = 0;
         }
         else sun.intensity = intensity;
+
+        //Precipitation
+        raindropEffect.enabled = precipitation;
+
     }
 
     Color CalculateColor(Color dayTime, Color midDay, Color nightTime)
@@ -83,5 +102,7 @@ public class DayNight : MonoBehaviour
         GUI.Label(rect, "timeRT: " + timeRT);
         rect = new Rect(120, 10, 200, 10);
         TimeOfDay = GUI.HorizontalSlider(rect, TimeOfDay, 0, 1);
+        rect = new Rect(10, 60, 120, 20);
+        precipitation = GUI.Toggle(rect, precipitation, " Precipitations");
     }
 }

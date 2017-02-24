@@ -90,7 +90,6 @@
 				// Twelve layers of rain sheets...
 				float2 q = i.uv;
 				float dis = 1.;
-				//col = float3(0.5, 0.5, 0.5);
 				for (int i = 0; i < 5; i++)
 				{
 					float f =  pow(dis, .45) + .25;
@@ -101,14 +100,11 @@
 								+ (abs(_CamForward.y))*0.02
 							)
 							+ float2(q.y*_CamForward.z*0.3,0) 
-							//+ float2(_TimeOfDay*0.02, -_TimeOfDay*0.02)
 							+ float2(0, _TimeOfDay*0.2) 
 							+ float2(0,  (1 - _CamForward.z)*0.02)
 							);
 					
-					
-					// float2(_TimeOfDay*.1 + q.y*.5, -_TimeOfDay*.12));
-					f = (tex2Dbias(_NoiseOffsets, float4(st.x*.5, st.y*.5, 0, 0)).x)*2.0;// + tex2Dbias(_NoiseOffsets, float4(st.x*.284, st.y*.284, 0, -16)).y);
+					f = (tex2Dbias(_NoiseOffsets, float4(st.x*.5, st.y*.5, 0, 0)).x)*2.0;
 					f = clamp(pow(abs(f)*.5, 29.0) * 140, 0.00, q.y*.4 + .05);
 					half4 bri = half4(.25, .25, .25 , 1);
 					col += bri*f;
