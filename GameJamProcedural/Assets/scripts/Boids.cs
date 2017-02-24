@@ -167,5 +167,27 @@ public class Boids : MonoBehaviour {
             
             boid.obj.position += boid.velocity * Time.deltaTime;
         }
+        
+        int numAlive = 0;
+        foreach (BoidObject boid in boidObjs)
+            if (boid.obj.gameObject.activeSelf)
+                numAlive++;
+        if (numAlive == 0)
+        {
+            // on fait repoper tout ce ptit monde
+            foreach (BoidObject boid in boidObjs)
+            {
+                boid.obj.gameObject.SetActive(true);
+                boid.velocity = Vector3.zero;
+                boid.terrainAvoidanceVelocity = Vector3.zero;
+                boid.currentChunk = null;
+                boid.currentChunkBlockIndex = new int[3];
+                boid.currentChunkBlock = null;
+                boid.seesPlayer = false;
+                boid.lastKnownPlayerPosition = transform.position;
+                boid.obj.position = transform.position;
+                boid.shootScript.seesPlayer = false;
+            }
+        }
     }
 }

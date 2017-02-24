@@ -88,7 +88,8 @@
 		float3 p = pos;
 		// For each iteration, we read from our noise function the density of our current position, and adds it to this density variable.
 		float density = 0;
-
+ 
+        [unroll(10)]
 		for (float i = 0; i < _Iterations; i++)
 		{
 			// f gives a number between 0 and 1.

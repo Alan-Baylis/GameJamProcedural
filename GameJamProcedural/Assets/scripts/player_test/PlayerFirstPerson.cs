@@ -317,6 +317,7 @@ public class PlayerFirstPerson : MonoBehaviour {
     IEnumerator BackToMainMenu()
     {
         yield return new WaitForSeconds(5);
+        SetCursorLock(false);
         SceneManager.LoadScene("menu");
     }
 }
