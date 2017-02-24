@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class PlayerFirstPerson : MonoBehaviour {
     public CharacterController controller;
@@ -21,8 +22,12 @@ public class PlayerFirstPerson : MonoBehaviour {
     public float blinkCooldown = 1f;
     public UnityEngine.UI.Image uiBlinkFillBar;
     public UnityEngine.UI.Image uiHealthBar;
+    public UnityEngine.UI.Text uiScoreText;
+    public CanvasGroup uiGameOverGroup;
+    public shootBoids shootBoidsScript;
     public UnityStandardAssets.ImageEffects.VignetteAndChromaticAberration hitShader;
     float currentHealth = 100;
+    bool gameOver = false;
     
     public Vector3 velocity;
     
@@ -70,6 +75,7 @@ public class PlayerFirstPerson : MonoBehaviour {
         defaultBlinkPoints = uiBlinkFillBar.fillAmount * 100;
         currentBlinkPoints = defaultBlinkPoints;
         debugMenu = dayNight.debugMenu;
+        uiGameOverGroup.alpha = 0;
 	}
 	
 	void Update () {
@@ -77,7 +83,7 @@ public class PlayerFirstPerson : MonoBehaviour {
         debugMenu = dayNight.debugMenu;
         //
 
-        if (Input.GetButtonDown("Flymode"))
+        if (Input.GetButtonDown("Flymode") && !gameOver)
         {
             flymode = !flymode;
             velocity = new Vector3(0, 0, 0);
@@ -95,9 +101,9 @@ public class PlayerFirstPerson : MonoBehaviour {
             transform.Rotate(new Vector3(0, yRotation, 0));
         }
         
-        if (Input.GetButtonDown("Jump") && (grounded || flymode))
+        if (Input.GetButtonDown("Jump") && (grounded || flymode) && !gameOver)
             doJump = true;
-        else if (Input.GetButtonUp("Jump"))
+        else if (Input.GetButtonUp("Jump") && !gameOver)
             doJump = false;
         if (Input.GetButton("Sprint"))
             currentSpeed = MovementSpeed.sprinting;
@@ -105,15 +111,15 @@ public class PlayerFirstPerson : MonoBehaviour {
             currentSpeed = MovementSpeed.walking;
         else
             currentSpeed = MovementSpeed.jogging;
-        if (Input.GetButtonDown("Auto move"))
+        if (Input.GetButtonDown("Auto move") && !gameOver)
         {
             autoMove = !autoMove;
             autoMoveLockForward = autoMove;
         }
         
-        if (Input.GetButtonDown("Fire1") && currentBlinkPoints > .5*defaultBlinkPoints && blinkCooldownTimer < 0 && !debugMenu)
+        if (Input.GetButtonDown("Fire1") && currentBlinkPoints > .5*defaultBlinkPoints && blinkCooldownTimer < 0 && !debugMenu && !gameOver)
             blinking = true;
-        if (Input.GetButtonUp("Fire1") && blinking)
+        if (Input.GetButtonUp("Fire1") && blinking && !gameOver)
         {
             blinking = false;
             blinkCooldownTimer = blinkCooldown;
@@ -158,7 +164,7 @@ public class PlayerFirstPerson : MonoBehaviour {
         
         float forwardInput = Input.GetAxisRaw("Vertical");
         float rightInput = Input.GetAxisRaw("Horizontal");
-        if (autoMove)
+        if (autoMove && !gameOver)
         {
             if (forwardInput < -.25f)
                 autoMove = false;
@@ -172,7 +178,7 @@ public class PlayerFirstPerson : MonoBehaviour {
             if (autoMove)
                 forwardInput = 1;
         }
-        if (flymode)
+        if (flymode && !gameOver)
         {
             moveDirection.z = Mathf.Sin(-yRotation / 180f * Mathf.PI) * rightInput + Mathf.Cos(-yRotation / 180f * Mathf.PI) * forwardInput * Mathf.Cos(xRotation / 180f * Mathf.PI);
             moveDirection.x = Mathf.Cos(yRotation / 180f * Mathf.PI) * rightInput + Mathf.Sin(yRotation / 180f * Mathf.PI) * forwardInput * Mathf.Cos(xRotation / 180f * Mathf.PI);
@@ -200,6 +206,8 @@ public class PlayerFirstPerson : MonoBehaviour {
         hitFXTimer -= Time.deltaTime;
         if (hitFXTimer < 0)
             hitFXTimer = 0;
+        if (gameOver)
+            uiGameOverGroup.alpha += Time.deltaTime;
 	}
     
 	void FixedUpdate () {
@@ -298,5 +306,17 @@ public class PlayerFirstPerson : MonoBehaviour {
     {
         hitFXTimer = hitFXDuration;
         currentHealth -= 10;
+        if (currentHealth < 0)
+        {
+            gameOver = true;
+            uiScoreText.text = "Score : " + shootBoidsScript.scoreJoueur;
+            StartCoroutine(BackToMainMenu());
+        }
+    }
+    
+    IEnumerator BackToMainMenu()
+    {
+        yield return new WaitForSeconds(5);
+        SceneManager.LoadScene("menu");
     }
 }
